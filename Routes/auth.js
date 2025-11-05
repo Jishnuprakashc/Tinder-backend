@@ -70,5 +70,4 @@ authRouter.post("/logout", async (req, res) => {
     res.status(400).send("Logout Failed");
   }
 });
-
 module.exports = authRouter;
