@@ -3,7 +3,6 @@ const connectDB = require("../src/Config/Database");
 const validator = require("validator");
 const app = express();
 const cookieParser = require('cookie-parser');
-
 const authRouter =require('./Routes/auth')
 const profileRouter =require('./Routes/profile')
 const requestRouter =require('./Routes/request')
@@ -14,7 +13,6 @@ app.use("/", authRouter);
 app.use("/", profileRouter);
 app.use("/", requestRouter);
 app.use("/",userRouter)
-
 connectDB()
   .then(() => {
     console.log("Database connection established successfully");
