@@ -7,8 +7,16 @@ const authRouter =require('./Routes/auth')
 const profileRouter =require('./Routes/profile')
 const requestRouter =require('./Routes/request')
 const userRouter =require('./Routes/user')
-app.use(express.json());
+const cors = require("cors");
+app.use(express.json()); //add the middleware
 app.use(cookieParser());
+app.use(
+  cors({
+    origin: "http://localhost:5174",
+    credentials: true,
+    methods: ["GET", "POST", "PUT", "PATCH", "DELETE"],
+  })
+);
 app.use("/", authRouter);
 app.use("/", profileRouter);
 app.use("/", requestRouter);
@@ -23,3 +31,4 @@ connectDB()
   .catch((err) => {
     console.log("Database cannot be connected", err);
   });
+ 

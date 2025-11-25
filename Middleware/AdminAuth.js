@@ -5,7 +5,7 @@ const userAuth = async (req, res, next) => {
   try {
     const { token } = req.cookies;
     if (!token) {
-      throw new Error("Token is not valid!!!!!!!!");
+      return res.status(400).send("Please Login")
     }
     const decodedObj = await jwt.verify(token, "mySecretkey");
     const { _id } = decodedObj;
@@ -22,3 +22,4 @@ const userAuth = async (req, res, next) => {
 module.exports = {
   userAuth,
 };
+ 

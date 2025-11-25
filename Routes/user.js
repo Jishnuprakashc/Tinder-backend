@@ -3,7 +3,7 @@ const { userAuth } = require("../Middleware/AdminAuth");
 const express = require("express");
 const userRouter = express.Router();
 const User = require("../models/user");
-const USER_SAFE_DATA = "firstName lastName gender  photourl  skills";
+const USER_SAFE_DATA = "firstName lastName gender  photoUrl  skills";
 const ConnectionRequest = require("../models/connectionRequest");
 userRouter.get("/user/requests/received", userAuth, async (req, res) => {
   try {
@@ -11,7 +11,7 @@ userRouter.get("/user/requests/received", userAuth, async (req, res) => {
     const connectionRequest = await ConnectionRequest.find({
       toUserId: loggedInUser._id,
       status: "interested",
-    }).populate("fromUserId", ["firstName", "lastName"]);
+    }).populate("fromUserId", ["firstName", "lastName","photoUrl","gender",]);
 
     res.json({
       message: "Data request fetched successfully",

@@ -1,3 +1,4 @@
+console.log("RUNNING FILE:", __filename);
 const express = require("express");
 const User = require("../models/user");
 const { ValidateEditProfileData } = require("../utils/Validation");
@@ -11,24 +12,25 @@ profileRouter.get("/profile/view", userAuth, async (req, res) => {
     res.status(400).send("ERROR :" + err.message);
   }
 });
-profileRouter.patch("/profile/edit", userAuth, async (req, res) => {
+profileRouter.put("/profile/edit", userAuth, async (req, res) => {
   try {
     const isValid = ValidateEditProfileData(req);
     if (!isValid) {
       throw new Error(" Email and password are not allowed to edit ");
     }
-    const updatedUsers = await User.findByIdAndUpdate(
-      req.user._id, // Use authenticated
+    const updatedUsers = await User.findByIdAndUpdate( 
+      req.user._id, // Use authenticated 
       req.body, //Update with allowed fields
 
       { new: true, runValidators: true }
     );
-    res.send({
+    res.json({
       message: "Validation Passed. Profile is Updated Successfully",
-      user: updatedUsers,
+      data: updatedUsers,  
     });
   } catch (err) {
     res.status(400).send("ERROR" + err.message);
   }
 });
 module.exports = profileRouter;
+ 

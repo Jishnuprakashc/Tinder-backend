@@ -3,7 +3,7 @@ const requestRouter = express.Router();
 const { userAuth } = require("../Middleware/AdminAuth");
 const ConnectionRequest = require("../models/connectionRequest");
 const User = require("../models/user");
-requestRouter.post(
+requestRouter.post( 
   "/request/send/:status/:toUserId",
   userAuth,
   async (req, res) => {
@@ -11,12 +11,12 @@ requestRouter.post(
       const fromUserId = req.user._id;
       const toUserId = req.params.toUserId;
       const status = req.params.status;
-      //sending connection request
+      //sending connection request 
       const allowedStatus = ["ignored", "interested"];
       if (!allowedStatus.includes(status)) {
         return res.status(400).json({
           message: "Invalid Status type: " + status,
-        });
+        }); 
       }
       const connectionRequest = new ConnectionRequest({
         fromUserId,
@@ -32,7 +32,7 @@ requestRouter.post(
       if (existingConnectionRequest) {
        return res.status(400).send({ message: "Connection request already exists" });
       }
-      const toUser = await User.findById(toUserId);
+      const toUser = await User.findById(toUserId); 
       if (!toUser) {
         return res.status(400).json({
           message: "user not found",

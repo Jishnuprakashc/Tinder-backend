@@ -3,13 +3,15 @@ const { validateSignupData } = require("../utils/Validation");
 const User = require("../models/user");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
+const { data } = require("react-router-dom");
 const authRouter = express.Router();
 //signupPage
 authRouter.post("/signup", async (req, res) => {
   //validation of data
   try {
     validateSignupData(req);
-    const { firstName, lastName, emailId, password } = req.body;
+    const { firstName, lastName, emailId, password, photoUrl, about, age } =
+      req.body;
 
     //bcrypt the password
     const PasswordHash = await bcrypt.hash(password, 10);
@@ -19,14 +21,26 @@ authRouter.post("/signup", async (req, res) => {
       lastName,
       emailId: emailId.toLowerCase(),
       password: PasswordHash,
+      photoUrl,
+      about,
+      age
     });
-    await newUser.save();
-    res.send("User Added Successfully");
+    
+    const savedUser =await newUser.save();
+    const token = jwt.sign({ _id: savedUser._id }, "mySecretkey", {
+      expiresIn: "7d",
+    });
+
+    // save token in cookie
+    res.cookie("token", token, {
+      httpOnly: true,
+      maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
+    });
+    res.json({message:"User added Successfully",data:savedUser});
   } catch (err) {
     res.status(400).send(err.message);
   }
 });
-
 //login page
 authRouter.post("/login", async (req, res) => {
   const { emailId, password } = req.body;
@@ -35,22 +49,19 @@ authRouter.post("/login", async (req, res) => {
     if (!user) {
       throw new Error("Invalid Credential");
     }
-
     const isMatch = await bcrypt.compare(password, user.password);
 
     if (isMatch) {
-      //Create a JWT Token
+      //Create a JWT Token 
 
       const token = await jwt.sign({ _id: user._id }, "mySecretkey", {
         expiresIn: "7d",
       });
-      console.log(token);
-
-      res.cookie("token", token, {
+        res.cookie("token", token, {
         httpOnly: true,
         maxAge: 60 * 60 * 1000,
       });
-      res.send("Login Successfull");
+      res.send(user);
     } else {
       throw new Error("Invalid  password");
     }
@@ -61,11 +72,11 @@ authRouter.post("/login", async (req, res) => {
 //logout page
 authRouter.post("/logout", async (req, res) => {
   try {
-    res.cookie("token","", {
+    res.cookie("token", "", {
       httpOnly: true,
       expires: new Date(0),
     });
-    res.send("logout successfull")
+    res.send("logout successfull");
   } catch (err) {
     res.status(400).send("Logout Failed");
   }
