@@ -3,7 +3,6 @@ const { validateSignupData } = require("../utils/Validation");
 const User = require("../models/user");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
-const { data } = require("react-router-dom");
 const authRouter = express.Router();
 //signupPage
 authRouter.post("/signup", async (req, res) => {
